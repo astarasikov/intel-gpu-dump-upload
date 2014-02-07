@@ -16,9 +16,9 @@ def readLines(name):
         print 'Error: ', e
         return []
 
-def parseIntelHeader():
+def parseIntelHeader(fname):
     regnames = dict()
-    lines = readLines('intel_reg.h')
+    lines = readLines(fname)
     regex = re.compile('#define\s+([A-Z0-9_]+)\s+(0x[0-9a-fA-F]+)')
     for line in lines:
         match = regex.match(line)
@@ -28,9 +28,9 @@ def parseIntelHeader():
             regnames[name] = sval
     return regnames
 
-def parseRegList():
+def parseRegList(fname):
     regs = []
-    lines = readLines('fixregs')
+    lines = readLines(fname)
     regex = re.compile('\s+([A-Z0-9_]+):\s+(0x[0-9a-fA-F]+)(.+)')
     for line in lines:
         match = regex.match(line)
@@ -41,9 +41,9 @@ def parseRegList():
             regs.append((name, sval, comment))
     return regs
 
-def genScript(header, list, outFile):
-    regNames = parseIntelHeader()
-    regList = parseRegList()
+def genScript(header, rlist, outFile):
+    regNames = parseIntelHeader(header)
+    regList = parseRegList(rlist)
     out = [ '#!/bin/bash' ]
 
     for regTuple in regList:
